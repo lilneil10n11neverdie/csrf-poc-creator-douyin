@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>CSRF PoC — creator.douyin.com</title></head>
+<body style="font-family:sans-serif;max-width:720px;margin:40px auto">
+<h2>CSRF PoC — creator.douyin.com 写接口（ByteSRC 授权测试）</h2>
+<p>本页面为漏洞赏金授权测试用途。所有操作只应由测试者对<b>自己本人账号、本人作品</b>执行。</p>
+<ul>
+  <li><a href="noop.html">noop.html</a> — no-op 写探针（visibility 2→2，状态零变化，验证请求受理）</li>
+  <li><a href="flip.html">flip.html</a> — 参数化可见性翻转（?item_id=&amp;v=2 翻为仅自己可见；测试后立即还原）</li>
+</ul>
+<p>用法示例：<code>flip.html?item_id=你的作品ID&amp;v=2</code></p>
+<p style="color:#888">本页不含任何针对他人账号/作品的能力；写操作受服务端所有权校验约束（他人作品返回 code 7）。</p>
+</body>
+</html>

